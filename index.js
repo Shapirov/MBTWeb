@@ -41,14 +41,15 @@
 				// Every X second
                 if (data.Ballance) 
 				{
-                    slide2Scope.UpdateAccountData(data);
-					slide2Scope.UpdateBallanceGraph(data);
+                    slide2Scope.updateAccountData(data);
+					slide2Scope.updateBallanceGraph(data);
+					slide1Scope.updatePossitionLine(data);
                 } 
 				// Every sell order
 				else 
 				{
-					slide1Scope.UpdateShareDashboard();
-                    slide2Scope.UpdateHistoricalPositionsDataByTime(undefined, undefined);
+					slide1Scope.updateShareDashboard();
+                    slide2Scope.updateHistoricalPositionsDataByTime(undefined, undefined);
                 }
             });
         });

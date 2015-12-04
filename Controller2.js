@@ -16,7 +16,7 @@ angular.module('weBTrading').controller('slide2Ctrl', function ($scope, $timeout
 	////////////////////////////////////////////////////////////////////////////
 	// UpdateAccountData
 	////////////////////////////////////////////////////////////////////////////
-    $scope.UpdateAccountData = function (data) 
+    $scope.updateAccountData = function (data) 
 	{
         $scope.AccountData = data;
         $scope.piechartdata = 
@@ -43,7 +43,7 @@ angular.module('weBTrading').controller('slide2Ctrl', function ($scope, $timeout
 	////////////////////////////////////////////////////////////////////////////
 	// UpdateBallanceGraph
 	////////////////////////////////////////////////////////////////////////////
-	$scope.UpdateBallanceGraph = function (data) 
+	$scope.updateBallanceGraph = function (data) 
 	{
 		var arr = $scope.graphchartdata;
 					
@@ -80,7 +80,7 @@ angular.module('weBTrading').controller('slide2Ctrl', function ($scope, $timeout
 	////////////////////////////////////////////////////////////////////////////
 	//  UpdateHistoricalPositionsDataByTime
 	////////////////////////////////////////////////////////////////////////////
-    $scope.UpdateHistoricalPositionsDataByTime  = function (start, end) 
+    $scope.updateHistoricalPositionsDataByTime  = function (start, end) 
 	{
         if (start == undefined) 
 		{
@@ -114,5 +114,5 @@ angular.module('weBTrading').controller('slide2Ctrl', function ($scope, $timeout
         });
     }
 	
-	$scope.UpdateAccountData(initAccountData);
+	$scope.updateAccountData(initAccountData);
 });

@@ -34,23 +34,31 @@ var initGraphchartdata =
 
 var initCandlesticks = 
 [ {
+	"CandleIndex" : 0,
 	"Close": "91.16",
 	"Date": "2015-10-05T18:03:01.736Z",
 	"High": "98.17",
 	"Low": "90.09",
 	"Open": "93.21"
   },{
+	"CandleIndex" : 1,
 	"Close": "91.12",
 	"Date": "2015-10-05T18:03:02.737Z",
 	"High": "98.76",
 	"Low": "90.03",
 	"Open": "93.11"
   },{
+	"CandleIndex" : 2,
 	"Close": "91.12",
 	"Date": "2015-10-05T18:03:03.738Z",
 	"High": "98.16",
 	"Low": "90.03",
 	"Open": "93.11"
-  }
-  
-  ];
+  }];
+var initTrendLines = 
+[ {
+	"initialCategory" : "0",
+	"initialValue": "91.16",
+	"finalCategory" : "2",
+	"finalValue": "94.12"
+  }];

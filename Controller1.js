@@ -10,7 +10,8 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
 	$scope.Symbol = $('#oSymbol').val();
     $scope.historicalsharedata 	= initHistoricalsharedata;
 	$scope.candlesticksdata 	= initCandlesticks;
-	$scope.accessor 			= {};
+	$scope.buyandsellpoints 	= initTrendLines;
+	$scope.accessor 			= {};	
 	$scope.piechartdata = 
 		[
 			{
@@ -24,7 +25,7 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
 	////////////////////////////////////////////////////////////////////////////
 	// UpdateAccountData
 	////////////////////////////////////////////////////////////////////////////
-    $scope.UpdateShareDashboard = function () 
+    $scope.updateShareDashboard = function () 
 	{
         $http({
             url: 'http://127.0.0.1:8011/getShareHistoricalData',
@@ -59,7 +60,7 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
 	
 	
 	    $http({
-            url: 'http://127.0.0.1:8011/getShareCandles',
+            url: 'http://127.0.0.1:8011/getShareHistoricalCandles',
             method: "GET",
             params: 
 			{
@@ -80,7 +81,7 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
 			})
 			.success(function (data, status) 
 			{
-				$scope.buyAndSellPoints = setPossisionsBuyAndSellPoints(data);
+				$scope.buyandsellpoints = setPossisionsBuyAndSellPoints(data);
 				
 				if ($scope.accessor.refreshCandlesticks) 
 				{ $scope.accessor.refreshCandlesticks(); }
@@ -88,26 +89,67 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
         });
     }
 	
-	function setPossisionsBuyAndSellPoints(var data)
+	function setPossisionsBuyAndSellPoints(data)
 	{
-		buyAndSellPointsArray = [];
+		var buyAndSellPointsArray = [];
+		var nIndex = 0;
 		
-		data.forEach(function (currPos) 
+		data.forEach(function (curr) 
 		{
-			if (currPos.BuyIndicator)
+			if (curr.Candles.BuyIndicator)
 			{
 				var currBuyAndSell = {}
-				currBuyAndSell["initialValue"]  = currPos.BuyPrice;
-				currBuyAndSell["initialXValue"] = currPos.CandleIndex;
+				currBuyAndSell["lineColor"]       = "#c3bcde";
+				currBuyAndSell["finalIndication"] = false;
+				currBuyAndSell["lineThickness"]   = 4;
+				currBuyAndSell["initialValue"]    = curr.Candles.BuyPrice;
+				currBuyAndSell["initialCategory"] = curr.Candles.CandleIndex.toString();
+				//currBuyAndSell["initialXValue"] = curr.Candles.CandleIndex;
+				//currBuyAndSell["initialDate"]   = curr.Candles.Date;
+				
 				buyAndSellPointsArray.push(currBuyAndSell)
 				nIndex++;
 			}
 			
-			if (currPos.SellIndicator)
+			if (curr.Candles.SellIndicator)
 			{
-				buyAndSellPointsArray[nIndex]["finalValue"]    = currPos.SellPrice;
-				buyAndSellPointsArray[nIndex]["finalXValue"]   = currPos.CandleIndex;
+				buyAndSellPointsArray[nIndex - 1]["finalIndication"] = true;
+				buyAndSellPointsArray[nIndex - 1]["finalValue"]      = curr.Candles.SellPrice;
+				buyAndSellPointsArray[nIndex - 1]["finalCategory"]   = curr.Candles.CandleIndex.toString();
+				//buyAndSellPointsArray[nIndex - 1]["finalXValue"]   = curr.Candles.CandleIndex;
+				//buyAndSellPointsArray[nIndex - 1]["finalDate"]     = curr.Candles.Date;
 			}
 		});
+		
+		if (!buyAndSellPointsArray[buyAndSellPointsArray.length - 1]["finalIndication"])
+		{
+			buyAndSellPointsArray[buyAndSellPointsArray.length - 1]["finalValue"] = $scope.buyandsellpoints[$scope.buyandsellpoints.length - 1].finalValue;
+			buyAndSellPointsArray[buyAndSellPointsArray.length - 1]["finalCategory"] = $scope.candlesticksdata[$scope.candlesticksdata.length - 1].CandleIndex + 1;
+		}
+		
+		return (buyAndSellPointsArray);
+	}
+	
+	$scope.updatePossitionLine =  function(ballance)
+	{
+		if ($scope.buyandsellpoints.length > 0)
+		{
+			if (!$scope.buyandsellpoints[$scope.buyandsellpoints.length - 1]["finalIndication"])
+			{
+				var lastPrice;
+				ballance.Shares.forEach(function (curr)
+				{
+					if (curr.Symbol == $scope.Symbol)
+					{
+						lastPrice = curr.LastPrice;
+					}
+				});
+				$scope.buyandsellpoints[$scope.buyandsellpoints.length - 1]["finalValue"] = lastPrice;
+				$scope.buyandsellpoints[$scope.buyandsellpoints.length - 1]["finalCategory"] = $scope.candlesticksdata[$scope.candlesticksdata.length - 1].CandleIndex + 1;
+				
+				if ($scope.accessor.refreshCandlesticks) 
+				{ $scope.accessor.refreshCandlesticks(); }
+			}
+		}
 	}
 });

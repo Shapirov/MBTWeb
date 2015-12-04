@@ -157,12 +157,17 @@ var ServerExpressListener = function ()
         });
     });
 
-	server.get('/getShareCandles', function (req, res) 
+	server.get('/getShareHistoricalCandles', function (req, res) 
 	{
 	    res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Cache-Control, Pragma, Origin, Authorization, Content-Type, X-Requested-With");
         res.header("Access-Control-Allow-Methods", "GET, PUT, POST");
-        collectionCandlesticks.find({ "Symbol" : req.query.Symbol }, { "Candles" :{ $slice: -500 }, "Candles.Open" : 1, "Candles.Close" : 1,"Candles.High" : 1,"Candles.Low" : 1,"Candles.Date" : 1}).toArray(function (err, results) 
+        collectionCandlesticks.find({ "Symbol" : req.query.Symbol }, { "Candles" :{ $slice: -250 }, "Candles.Open" : 1, 
+																									"Candles.Close" : 1,
+																									"Candles.High" : 1,
+																									"Candles.Low" : 1,
+																									"Candles.Date" : 1,
+																									"Candles.CandleIndex" : 1}).toArray(function (err, results) 
 		{
             res.send(results);
         });
@@ -177,6 +182,7 @@ var ServerExpressListener = function ()
 		[
 			{ $project: { "Symbol" : 1, 
 						  "Candles.CandleIndex" : 1, 
+						  "Candles.Date" : 1,
 						  "Candles.IsPossition" : 1, 
 						  "Candles.BuyIndicator" : 1, 
 						  "Candles.SellIndicator" : 1, 

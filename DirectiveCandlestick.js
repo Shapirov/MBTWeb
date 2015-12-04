@@ -10,6 +10,7 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
 		{
             accessor: "=",
             candlesticksdata: "=",
+			buyandsellpoints: "=",
             candlestickId: "@"
         },
         link: function (scope, element, attrs) 
@@ -29,7 +30,7 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
 				  "graphs": [ {
 					"id": "g1",
 					"proCandlesticks": true,
-					"balloonText": "Open:<b>[[Open]]</b><br>Low:<b>[[Low]]</b><br>High:<b>[[High]]</b><br>Close:<b>[[Close]]</b><br>",
+					"balloonText": "Open:<b>[[Open]]</b><br>Low:<b>[[Low]]</b><br>High:<b>[[High]]</b><br>Close:<b>[[Close]]</b><br><br>Date:<b>[[Date]]</b><br>",
 					"closeField": "Close",
 					"fillColors": "#7f8da9",
 					"highField": "High",
@@ -55,13 +56,14 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
 					"valueLineEnabled": true,
 					"valueLineBalloonEnabled": true
 				  },
-				  "categoryField": "Date",
-				  "categoryAxis": {
-					"parseDates": false,
-					"autoGridCount" : false,
-					"minPeriod" : "fff"
-				  },
+				  "categoryField": "CandleIndex",
+//			  "categoryAxis": {
+//				"parseDates": false,
+//				"autoGridCount" : false,
+//				"minPeriod" : "fff"
+//			  },
 				  "dataProvider": scope.candlesticksdata,
+				  "trendLines" : scope.buyandsellpoints,
 				  "export": {
 					"enabled": true,
 					"position": "bottom-right"
@@ -71,7 +73,7 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
 
 				graph.addListener("rendered", zoomChart);
 				{
-					zoomChart();
+					//zoomChart();
 				}
 
 				// this method is called when graph is first inited as we listen for "dataUpdated" event
@@ -80,6 +82,8 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
 				  // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
 				  graph.zoomToIndexes( graph.dataProvider.length - 50, graph.dataProvider.length - 1 );
 				}
+				
+				zoomChart();
 			});
 
 
@@ -87,6 +91,7 @@ weBTrading.directive('candlestickchart', ['$timeout', function ($timeout)
             scope.accessor.refreshCandlesticks = function () 
 			{
                 graph.dataProvider = scope.candlesticksdata;
+				graph.trendLines = scope.buyandsellpoints;
                 graph.validateData();
             };
         }
