@@ -80,11 +80,34 @@ angular.module('weBTrading').controller('slide1Ctrl', function ($scope, $timeout
 			})
 			.success(function (data, status) 
 			{
-				$scope.candlesticksdata = data[0].Candles;
+				$scope.buyAndSellPoints = setPossisionsBuyAndSellPoints(data);
 				
 				if ($scope.accessor.refreshCandlesticks) 
 				{ $scope.accessor.refreshCandlesticks(); }
 			});
         });
     }
+	
+	function setPossisionsBuyAndSellPoints(var data)
+	{
+		buyAndSellPointsArray = [];
+		
+		data.forEach(function (currPos) 
+		{
+			if (currPos.BuyIndicator)
+			{
+				var currBuyAndSell = {}
+				currBuyAndSell["initialValue"]  = currPos.BuyPrice;
+				currBuyAndSell["initialXValue"] = currPos.CandleIndex;
+				buyAndSellPointsArray.push(currBuyAndSell)
+				nIndex++;
+			}
+			
+			if (currPos.SellIndicator)
+			{
+				buyAndSellPointsArray[nIndex]["finalValue"]    = currPos.SellPrice;
+				buyAndSellPointsArray[nIndex]["finalXValue"]   = currPos.CandleIndex;
+			}
+		});
+	}
 });
